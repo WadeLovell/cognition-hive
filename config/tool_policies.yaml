@@ -1,0 +1,15 @@
+agents:
+  router: {}
+  scout: {}
+  verifier: {}
+  operator: {}
+  archivist: {}
+  warden: {}
+
+thresholds:
+  verification:
+    minimum_confidence_to_proceed: 0.7
+    minimum_confidence_with_caveats: 0.5
+    force_re_retrieval_below: 0.3
+  warden:
+    max_tool_violations_before_halt: 3
