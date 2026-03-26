@@ -4,6 +4,7 @@ Centralizes model selection, error handling, and token tracking.
 """
 
 import json
+import time
 import logging
 import anthropic
 
@@ -55,6 +56,7 @@ def call_claude(
         kwargs["tools"] = tools
 
     try:
+        time.sleep(65)  # Rate limit buffer - wait for token window to reset
         message = client.messages.create(**kwargs)
 
         logger.info(

@@ -65,6 +65,8 @@ def init_agents(config: dict, include_warden: bool = False) -> dict:
 def process_request(request: str, agents: dict) -> dict:
     """
     Full pipeline: Router -> Scout -> Verifier -> Operator -> Archivist -> Warden
+
+    Returns a dict with the result and all pipeline metadata.
     """
     session_id = f"s_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}"
     logger.info(f"[{session_id}] Processing: {request[:80]}...")
@@ -129,13 +131,23 @@ def process_request(request: str, agents: dict) -> dict:
             result=result,
         )
 
-    # Print summary
+    # Attach pipeline metadata to result for API consumers
+    claims_found = len(scout_output.get("claims", []))
+    overall_confidence = verification.get("overall_confidence", 0)
+    recommendation = verification.get("recommendation", "unknown")
+
+    result["_category"] = route["category"]
+    result["_claims_found"] = claims_found
+    result["_verification_confidence"] = overall_confidence
+    result["_verification_recommendation"] = recommendation
+
+    # Print summary (for CLI usage)
     print(f"\n{'='*60}")
     print(f"Session: {session_id}")
     print(f"Category: {route['category']}")
-    print(f"Claims found: {len(scout_output.get('claims', []))}")
-    print(f"Verification: {verification['recommendation']} "
-          f"(confidence: {verification.get('overall_confidence', 0):.2f})")
+    print(f"Claims found: {claims_found}")
+    print(f"Verification: {recommendation} "
+          f"(confidence: {overall_confidence:.2f})")
     print(f"Status: {result.get('status', 'unknown')}")
     print(f"{'='*60}")
 
