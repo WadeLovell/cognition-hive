@@ -41,6 +41,8 @@ app.add_middleware(
     allow_origins=[
         "https://cognitionhive.com",
         "https://www.cognitionhive.com",
+        "https://cognition-hive-frontend.vercel.app",
+        "https://cognition-hive-frontend-wadelovells-projects.vercel.app",
         "http://localhost:3000",
         "http://localhost:5173",
     ],
